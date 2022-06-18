@@ -1,9 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
-  
-use Illuminate\Http\Request;
+
 use DomDocument;
+use File;
+use Illuminate\Http\Request;
 
 class SummernoteController extends Controller
 {
@@ -31,6 +32,10 @@ class SummernoteController extends Controller
         $dom = new DomDocument();
         $dom->loadHtml($description, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);    
         $images = $dom->getElementsByTagName('img');
+        $path = public_path('upload');
+        if(!File::isDirectory($path)){
+            File::makeDirectory($path, 0777, true, true);
+        }
         foreach($images as $k => $img){
             $data = $img->getAttribute('src');
             list($type, $data) = explode(';', $data);
